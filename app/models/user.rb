@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+    has_many :microposts, dependent: :destroy
     attr_accessor :remember_token
     # before_save { self.email = email.downcase }
     before_save { email.downcase! }
@@ -19,11 +20,14 @@ class User < ApplicationRecord
             cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
             BCrypt::Password.create(string, cost: cost)
         end
-        
         def new_token
             SecureRandom.urlsafe_base64
         end
     end
+    
+    # def feed
+    #   Micropost.where("user_id = ?", id) 
+    # end
     
     def remember
        self.remember_token = User.new_token
